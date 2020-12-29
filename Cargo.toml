@@ -1,0 +1,17 @@
+[package]
+name = "rfc"
+version = "0.1.0"
+authors = ["cy6erlion <dev@merely.tech>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# For parsing command line arguments
+clap = "2.33.3"
+# Minimal HTTP client
+minreq = {version = "2.2.1", features = ["https"]}
+# Pager
+pager = "0.16.0"
+# Directories
+dirs-next = "2.0.0"
