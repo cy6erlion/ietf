@@ -100,6 +100,7 @@ fn index_exists() -> Result<bool, ()> {
         if Path::new(&path).exists() {
             return Ok(true);
         } else {
+            init_storage_sir().unwrap();
             return Ok(false);
         }
     } else {
@@ -121,7 +122,30 @@ fn is_rfc_downloaded(sn: u32) -> Result<bool, ()> {
         if Path::new(&path).exists() {
             return Ok(true);
         } else {
+            init_storage_sir().unwrap();
             return Ok(false);
+        }
+    } else {
+        panic!("Could not find home directory");
+    }
+}
+
+// Check and create storage directory
+fn init_storage_sir() -> std::io::Result<()> {
+    if let Some(home_path) = dirs_next::home_dir() {
+        let path = if cfg!(unix) || cfg!(macos) {
+            format!("{}/rfc", home_path.to_str().unwrap())
+        } else if cfg!(windows) {
+            format!("{}\\rfc", home_path.to_str().unwrap())
+        } else {
+            panic!("Unsupported OS");
+        };
+
+        if Path::new(&path).exists() {
+            return Ok(());
+        } else {
+            std::fs::create_dir(path)?;
+            return Ok(());
         }
     } else {
         panic!("Could not find home directory");
