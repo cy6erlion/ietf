@@ -1,4 +1,4 @@
-``` text▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+``` text
 ██▄██ ▄▄█▄ ▄█ ▄▄
 ██ ▄█ ▄▄██ ██ ▄█
 █▄▄▄█▄▄▄██▄██▄██
@@ -6,12 +6,12 @@
 ```
 
 ``` bash
-$ ietf 0.1.0
-	
-A program to read IETF RFCs in the terminal.
+$ ietf -h
+
+ietf 0.1.0
+A program to read RFCs in the terminal.
 
 USAGE:
-
 	ietf [OPTIONS] [SUBCOMMAND]
 	
 FLAGS:
@@ -20,10 +20,10 @@ FLAGS:
 			
 OPTIONS:
 	-n, --number <serial>    RFC Serial Number
-
+				
 SUBCOMMANDS:
 	help      Prints this message or the help of the given subcommand(s)
-	update    Update RFC Index
+	update    Update RFC Index						
 ```						
 
 ## Features
@@ -34,6 +34,15 @@ SUBCOMMANDS:
 * Pager 
 		
 ## Guide
+
+### Installing
+
+You can install it with rust's package manager 
+[cargo](https://github.com/rust-lang/cargo) like this:
+
+``` bash
+ $ cargo install ietf
+```
 
 ### Running	
 To run simply type the following command in the shell to start the RFC
