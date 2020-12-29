@@ -1,16 +1,18 @@
-``` text
-█▀▄ █▀ ▄▀▀
-█▀▄ █▀ ▀▄▄
+``` text▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+██▄██ ▄▄█▄ ▄█ ▄▄
+██ ▄█ ▄▄██ ██ ▄█
+█▄▄▄█▄▄▄██▄██▄██
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 ```
 
 ``` bash
-$ rfc 0.1.0
+$ ietf 0.1.0
 	
-A program to read RFCs in the terminal.
+A program to read IETF RFCs in the terminal.
 
 USAGE:
 
-	rfc [OPTIONS] [SUBCOMMAND]
+	ietf [OPTIONS] [SUBCOMMAND]
 	
 FLAGS:
 	-h, --help       Prints help information
@@ -38,17 +40,17 @@ To run simply type the following command in the shell to start the RFC
 browser:
 
 ``` bash
-$ rfc
+$ ietf
 ```
 
 ### Read RFC by number
 ``` bash
-$ rfc -n 1
+$ ietf -n 1
 ```
 
 ### Update
 To update the local RFC index, use the following command:
 
 ``` bash
-$ rfc update
+$ ietf update
 ```

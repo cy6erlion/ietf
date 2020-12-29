@@ -98,10 +98,10 @@ fn index_exists() -> Result<bool, ()> {
         };
 
         if Path::new(&path).exists() {
-            return Ok(true);
+            Ok(true)
         } else {
             init_storage_sir().unwrap();
-            return Ok(false);
+            Ok(false)
         }
     } else {
         panic!("Could not find home directory");
@@ -120,10 +120,10 @@ fn is_rfc_downloaded(sn: u32) -> Result<bool, ()> {
         };
 
         if Path::new(&path).exists() {
-            return Ok(true);
+            Ok(true)
         } else {
             init_storage_sir().unwrap();
-            return Ok(false);
+            Ok(false)
         }
     } else {
         panic!("Could not find home directory");
@@ -142,10 +142,10 @@ fn init_storage_sir() -> std::io::Result<()> {
         };
 
         if Path::new(&path).exists() {
-            return Ok(());
+            Ok(())
         } else {
             std::fs::create_dir(path)?;
-            return Ok(());
+            Ok(())
         }
     } else {
         panic!("Could not find home directory");

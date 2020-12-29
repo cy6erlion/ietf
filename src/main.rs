@@ -1,7 +1,7 @@
 use clap::{App, Arg, SubCommand};
 
 fn main() {
-    let matches = App::new("rfc")
+    let matches = App::new("ietf")
         .version("0.1.0")
         .about("A program to read RFCs in the terminal.")
         .arg(
@@ -17,7 +17,7 @@ fn main() {
 
     // Read RFC by serial number
     if let Some(n) = matches.value_of("Number") {
-        rfc::read_rfc(
+        ietf::read_rfc(
             n.parse::<u32>()
                 .expect("RFC Serial Number should be a numeric value!"),
         );
@@ -25,11 +25,11 @@ fn main() {
     }
 
     // Update RFC index
-    if let Some(matches) = matches.subcommand_matches("update") {
-        rfc::update();
+    if let Some(_matches) = matches.subcommand_matches("update") {
+        ietf::update();
         return;
     }
 
     // Display RFC list view
-    rfc::list_view();
+    ietf::list_view();
 }

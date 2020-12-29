@@ -149,6 +149,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ietf"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "dirs-next",
+ "minreq",
+ "pager",
+]
+
+[[package]]
 name = "js-sys"
 version = "0.3.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -238,16 +248,6 @@ checksum = "de0737333e7a9502c789a36d7c7fa6092a49895d4faa31ca5df163857ded2e9d"
 dependencies = [
  "getrandom",
  "redox_syscall",
-]
-
-[[package]]
-name = "rfc"
-version = "0.1.0"
-dependencies = [
- "clap",
- "dirs-next",
- "minreq",
- "pager",
 ]
 
 [[package]]

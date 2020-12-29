@@ -33,7 +33,7 @@ pub fn persist_index(index: Vec<String>) {
             panic!("Unsupported OS");
         };
 
-        let file = File::create(&path).expect("Unable to create file");
+        let _file = File::create(&path).expect("Unable to create file");
         let mut file = OpenOptions::new()
             .write(true)
             .append(true)
@@ -61,7 +61,7 @@ pub fn persist_rfc(sn: u32, rfc: &str) {
             panic!("Unsupported OS");
         };
 
-        let file = File::create(&path).expect("Unable to create file");
+        let _file = File::create(&path).expect("Unable to create file");
         let mut file = OpenOptions::new()
             .write(true)
             .append(true)
@@ -93,7 +93,7 @@ pub fn scrape(data: &str) -> Vec<String> {
                 buff = format!("{}{}", buff, line);
             }
         } else {
-            count = count + 1;
+            count += 1;
         }
     }
 
