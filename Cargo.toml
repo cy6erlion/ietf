@@ -3,6 +3,15 @@ name = "ietf"
 version = "0.1.0"
 authors = ["cy6erlion <dev@merely.tech>"]
 edition = "2018"
+description = "A program to read IETF RFCs in the terminal."
+homepage = "https://github.com/cy6erlion/ietf"
+documentation = "https://github.com/cy6erlion/ietf/blob/master/README.md#guide"
+repository = "https://github.com/cy6erlion/ietf"
+readme = "README.md"
+keywords = ["cli", "RFC", "IETF", "Pager"]
+categories = ["command-line-utilities"]
+
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
