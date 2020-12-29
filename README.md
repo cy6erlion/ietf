@@ -2,24 +2,28 @@
 █▀▄ █▀ ▄▀▀
 █▀▄ █▀ ▀▄▄
 ```
-rfc 0.1.0
+
+``` bash
+$ rfc 0.1.0
+	
 A program to read RFCs in the terminal.
 
 USAGE:
 
 	rfc [OPTIONS] [SUBCOMMAND]
 	
-	FLAGS:
-		-h, --help       Prints help information
-		-V, --version    Prints version information
+FLAGS:
+	-h, --help       Prints help information
+	-V, --version    Prints version information
 			
-	OPTIONS:
-		-n, --number <serial>    RFC Serial Number
+OPTIONS:
+	-n, --number <serial>    RFC Serial Number
 
-	SUBCOMMANDS:
-		help      Prints this message or the help of the given subcommand(s)
-		update    Update RFC Index
-						
+SUBCOMMANDS:
+	help      Prints this message or the help of the given subcommand(s)
+	update    Update RFC Index
+```						
+
 ## Features
 * RFC index browser
 * Read By RFC number
