@@ -36,9 +36,8 @@ SUBCOMMANDS:
 ## Guide
 
 ### Installing
-
-You can install it with rust's package manager 
-[cargo](https://github.com/rust-lang/cargo) like this:
+You can install it with the Rust package manager 
+[Cargo](https://github.com/rust-lang/cargo) like this:
 
 ``` bash
  $ cargo install ietf
@@ -46,7 +45,7 @@ You can install it with rust's package manager
 
 ### Running	
 To run simply type the following command in the shell to start the RFC
-browser:
+index:
 
 ``` bash
 $ ietf
