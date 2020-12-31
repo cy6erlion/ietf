@@ -85,6 +85,44 @@ pub fn update() {
     fetch::index().unwrap();
 }
 
+// Removes RFC by Serial Number
+pub fn remove(sn: u32) {
+    if let Some(home_path) = dirs_next::home_dir() {
+        let path = if cfg!(unix) || cfg!(macos) {
+            format!("{}/rfc/{}", home_path.to_str().unwrap(), sn)
+        } else if cfg!(windows) {
+            format!("{}\\rfc\\{}", home_path.to_str().unwrap(), sn)
+        } else {
+            panic!("Unsupported OS");
+        };
+
+        if Path::new(&path).exists() {
+            std::fs::remove_file(&path).unwrap();
+        }
+    } else {
+        panic!("Could not find home directory");
+    }
+}
+
+// Removes the rfc directory
+pub fn clean() -> () {
+    if let Some(home_path) = dirs_next::home_dir() {
+        let path = if cfg!(unix) || cfg!(macos) {
+            format!("{}/rfc", home_path.to_str().unwrap())
+        } else if cfg!(windows) {
+            format!("{}\\rfc", home_path.to_str().unwrap())
+        } else {
+            panic!("Unsupported OS");
+        };
+
+        if Path::new(&path).exists() {
+            std::fs::remove_dir_all(&path).unwrap();
+        }
+    } else {
+        panic!("Could not find home directory");
+    }
+}
+
 // Check if it is first time running by
 // checking if config files exist
 fn index_exists() -> Result<bool, ()> {
