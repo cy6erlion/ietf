@@ -43,9 +43,7 @@ You can install it with the Rust package manager
  $ cargo install ietf
 ```
 
-### Running	
-To run simply type the following command in the shell to start the RFC
-index:
+### View RFC index
 
 ``` bash
 $ ietf
@@ -56,8 +54,17 @@ $ ietf
 $ ietf -n 1
 ```
 
-### Update
-To update the local RFC index, use the following command:
+### Remove an RFC
+``` bash
+$ ietf -r 1
+```
+
+### Remove the RFC storage directory:
+``` bash
+$ ietf clean
+```
+
+### Update/Download RFC index
 
 ``` bash
 $ ietf update
