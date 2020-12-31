@@ -12,6 +12,14 @@ fn main() {
                 .help("RFC Serial Number")
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("Remove")
+                .short("r")
+                .long("remove")
+                .value_name("serial")
+                .help("RFC Serial Number")
+                .takes_value(true),
+        )
         .subcommand(SubCommand::with_name("update").about("Update RFC Index"))
         .subcommand(SubCommand::with_name("clean").about("Remove the rfc directory"))
         .get_matches();
@@ -19,6 +27,15 @@ fn main() {
     // Read RFC by serial number
     if let Some(n) = matches.value_of("Number") {
         ietf::read_rfc(
+            n.parse::<u32>()
+                .expect("RFC Serial Number should be a numeric value!"),
+        );
+        return;
+    }
+
+    // Removes RFC by serial number
+    if let Some(n) = matches.value_of("Remove") {
+        ietf::remove(
             n.parse::<u32>()
                 .expect("RFC Serial Number should be a numeric value!"),
         );
