@@ -4,6 +4,7 @@ fn main() {
     let matches = App::new("ietf")
         .version("0.1.0")
         .about("A program to read RFCs in the terminal.")
+        .before_help("██▄██ ▄▄█▄ ▄█ ▄▄\n██ ▄█ ▄▄██ ██ ▄█\n█▄▄▄█▄▄▄██▄██▄██\n▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀")
         .arg(
             Arg::with_name("Number")
                 .short("n")
