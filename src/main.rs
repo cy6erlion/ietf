@@ -13,7 +13,7 @@ fn main() {
                 .takes_value(true),
         )
         .subcommand(SubCommand::with_name("update").about("Update RFC Index"))
-        .subcommand(SubCommand::with_name("clean").about("Remove the ietf directory"))
+        .subcommand(SubCommand::with_name("clean").about("Remove the rfc directory"))
         .get_matches();
 
     // Read RFC by serial number
