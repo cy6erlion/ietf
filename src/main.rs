@@ -36,7 +36,7 @@ fn main() {
 
     // Removes RFC by serial number
     if let Some(n) = matches.value_of("Remove") {
-        ietf::remove(
+        ietf::storage::remove(
             n.parse::<u32>()
                 .expect("RFC Serial Number should be a numeric value!"),
         );
@@ -51,7 +51,7 @@ fn main() {
 
     // Remove the ietf directory
     if let Some(_matches) = matches.subcommand_matches("clean") {
-        ietf::clean();
+        ietf::storage::clean();
         return;
     }
 
