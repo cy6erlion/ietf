@@ -13,6 +13,7 @@ fn main() {
                 .takes_value(true),
         )
         .subcommand(SubCommand::with_name("update").about("Update RFC Index"))
+        .subcommand(SubCommand::with_name("clean").about("Remove the ietf directory"))
         .get_matches();
 
     // Read RFC by serial number
@@ -27,6 +28,12 @@ fn main() {
     // Update RFC index
     if let Some(_matches) = matches.subcommand_matches("update") {
         ietf::update();
+        return;
+    }
+
+    // Remove the ietf directory
+    if let Some(_matches) = matches.subcommand_matches("clean") {
+        ietf::clean();
         return;
     }
 
