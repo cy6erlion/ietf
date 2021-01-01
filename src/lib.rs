@@ -4,7 +4,6 @@ extern crate pager;
 use pager::Pager;
 use std::fs::File;
 use std::io::{BufReader, Read};
-use std::path::Path;
 
 mod fetch;
 pub mod storage;
