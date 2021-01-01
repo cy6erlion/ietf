@@ -1,29 +1,27 @@
-``` text
+``` console
 ██▄██ ▄▄█▄ ▄█ ▄▄
 ██ ▄█ ▄▄██ ██ ▄█
 █▄▄▄█▄▄▄██▄██▄██
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-```
-
-``` bash
-$ ietf -h
 
 ietf 0.1.0
 A program to read RFCs in the terminal.
 
 USAGE:
-	ietf [OPTIONS] [SUBCOMMAND]
-	
+    ietf [OPTIONS] [SUBCOMMAND]
+
 FLAGS:
-	-h, --help       Prints help information
-	-V, --version    Prints version information
-			
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
 OPTIONS:
-	-n, --number <serial>    RFC Serial Number
-				
+    -n, --number <serial>    RFC Serial Number
+    -r, --remove <serial>    RFC Serial Number
+
 SUBCOMMANDS:
-	help      Prints this message or the help of the given subcommand(s)
-	update    Update RFC Index						
+    clean     Remove the rfc directory
+    help      Prints this message or the help of the given subcommand(s)
+    update    Update RFC Index					
 ```						
 
 ## Features
