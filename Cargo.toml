@@ -24,3 +24,7 @@ minreq = {version = "2.2.1", features = ["https"]}
 pager = "0.16.0"
 # Directories
 dirs-next = "2.0.0"
+# ripgrep, as a library.
+grep = "0.2"
+#
+walkdir = "2.3.1"

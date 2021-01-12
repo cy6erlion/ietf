@@ -123,22 +123,4 @@ impl Storage {
             std::fs::remove_dir_all(&self.rfc_dir_path).unwrap();
         }
     }
-
-    // Get path of home directory
-    // (`~/rfc/` on unix systems and `C:\Users\{NAME}` on windows)
-    pub fn get_home_path() -> Option<String> {
-        if let Some(home_path) = dirs_next::home_dir() {
-            let path = if cfg!(unix) || cfg!(macos) {
-                format!("{}/rfc/", home_path.to_str().unwrap())
-            } else if cfg!(windows) {
-                format!("{}\\rfc\\", home_path.to_str().unwrap())
-            } else {
-                panic!("Unsupported OS");
-            };
-
-            Some(path)
-        } else {
-            None
-        }
-    }
 }
