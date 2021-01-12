@@ -1,14 +1,19 @@
 use clap::{App, Arg, SubCommand};
-extern crate pager;
+use cursive::align::HAlign;
+use cursive::event::{EventResult, Key};
+use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
+use cursive::traits::With;
+use cursive::traits::*;
+use cursive::views::{Dialog, OnEventView, Panel, SelectView, TextContent, TextView};
+use cursive::Cursive;
 
 mod fetch;
-pub mod storage;
+mod storage;
 
-use pager::Pager;
 use std::fs::File;
 use std::io::{BufReader, Read};
 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     let matches = App::new("ietf")
         .version("0.1.0")
         .about("A program to read RFCs in the terminal.")
@@ -34,13 +39,22 @@ fn main() {
         .get_matches();
 
     let storage = storage::Storage::new();
+    let mut siv = cursive::default();
+    siv.set_theme(cursive::theme::Theme::default().with(|theme| {
+        use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
+        theme.palette[Background] = TerminalDefault;
+        theme.palette[Primary] = Dark(Black);
+        theme.palette[Secondary] = Rgb(255, 12, 42);
+    }));
 
-    // Read RFC by serial number
+    // Read RFC by rfcnumber
     if let Some(n) = matches.value_of("Number") {
         let rfc_number = n.parse::<u32>().unwrap();
 
         // check if RFC is downloaded
         if !storage.is_rfc_downloaded(rfc_number).unwrap() {
+            println!("Fetching RFC...");
+
             // download RFC
             let rfc_data = fetch::rfc(rfc_number).unwrap();
 
@@ -57,9 +71,9 @@ fn main() {
             .read_to_string(&mut rfc_data)
             .expect("Unable to read RFC");
 
-        Pager::with_pager("less -r").setup();
-        println!("{}", &rfc_data);
-        return;
+        siv.add_layer(TextView::new(rfc_data).with_name("text").scrollable());
+        siv.run();
+        return Ok(());
     }
 
     // Removes RFC by serial number
@@ -68,19 +82,19 @@ fn main() {
             n.parse::<u32>()
                 .expect("RFC Serial Number should be a numeric value!"),
         );
-        return;
+        return Ok(());
     }
 
     // Update RFC index
     if let Some(_matches) = matches.subcommand_matches("update") {
         storage.update_index();
-        return;
+        return Ok(());
     }
 
     // Remove the ietf directory
     if let Some(_matches) = matches.subcommand_matches("clean") {
         storage.clean();
-        return;
+        return Ok(());
     }
 
     // ---------- Display RFC list view ------------
@@ -89,22 +103,66 @@ fn main() {
     let mut buffer_reader = BufReader::new(index_file);
     let mut read_more_dots = "";
 
+    // Let's put the callback in a separate function to keep it clean,
+    // but it's not required.
+    let show_next_window = move |siv: &mut Cursive, rfc_title: &str| {
+        let rfc_title: Vec<&str> = rfc_title.split(' ').collect();
+
+        let rfc_number = rfc_title[0]
+            .parse::<u32>()
+            .expect("Could not parse RFC number");
+
+        // check if RFC is downloaded
+        if !storage.is_rfc_downloaded(rfc_number).unwrap() {
+            println!("Fetching RFC...");
+            // download RFC
+            let rfc_data = fetch::rfc(rfc_number).unwrap();
+
+            // persist RFC
+            storage.persist_rfc(rfc_number, &rfc_data);
+        }
+
+        let rfc_file_path = format!("{}{}", storage.rfc_dir_path, rfc_number);
+
+        let mut rfc_data = String::new();
+        let index_file = File::open(&rfc_file_path).expect("Unable to open file");
+        let mut buffer_reader = BufReader::new(index_file);
+        buffer_reader
+            .read_to_string(&mut rfc_data)
+            .expect("Unable to read RFC");
+
+        siv.add_layer(TextView::new(rfc_data).with_name("text").scrollable());
+    };
+
     buffer_reader
         .read_to_string(&mut index_data)
         .expect("Unable to read INDEX");
 
-    Pager::with_pager("less -r").setup();
+    let lines = index_data.lines();
 
-    for line in index_data.lines() {
-        let line_words: Vec<&str> = line.split(' ').collect();
-        let summerize: String = line.chars().skip(line_words[0].len()).take(77).collect();
+    let mut select = SelectView::new()
+        // Center the text horizontally
+        .h_align(HAlign::Center)
+        // Use keyboard to jump to the pressed letters
+        .autojump();
 
-        if line.len() >= 77 {
-            read_more_dots = "...";
-        }
+    select.add_all_str(lines);
 
-        println!("{} | {}{}", line_words[0], summerize, read_more_dots);
+    // Sets the callback for when "Enter" is pressed.
+    select.set_on_submit(show_next_window);
 
-        read_more_dots = "";
-    }
+    // Let's override the `p` and `n` keys for navigation
+    let select = OnEventView::new(select)
+        .on_pre_event_inner('p', |s, _| {
+            let cb = s.select_up(1);
+            Some(EventResult::Consumed(Some(cb)))
+        })
+        .on_pre_event_inner('n', |s, _| {
+            let cb = s.select_down(1);
+            Some(EventResult::Consumed(Some(cb)))
+        });
+
+    siv.add_layer(Dialog::around(select.scrollable().fixed_size((30, 20))).title("IETF RFC INDEX"));
+    siv.run();
+    Ok(())
 }
