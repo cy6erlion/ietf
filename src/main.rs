@@ -1,10 +1,9 @@
 use clap::{App, Arg, SubCommand};
 use cursive::align::HAlign;
-use cursive::event::{EventResult, Key};
-use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
+use cursive::event::EventResult;
 use cursive::traits::With;
 use cursive::traits::*;
-use cursive::views::{Dialog, OnEventView, Panel, SelectView, TextContent, TextView};
+use cursive::views::{Dialog, OnEventView, SelectView, TextView};
 use cursive::Cursive;
 
 mod fetch;
@@ -101,7 +100,7 @@ fn main() -> Result<(), std::io::Error> {
     let mut index_data = String::new();
     let index_file = File::open(&storage.index_file_path).expect("Unable to open file");
     let mut buffer_reader = BufReader::new(index_file);
-    let mut read_more_dots = "";
+    let mut _read_more_dots = "";
 
     // Let's put the callback in a separate function to keep it clean,
     // but it's not required.
