@@ -15,7 +15,7 @@ use std::io::{BufReader, Read};
 
 fn main() -> Result<(), std::io::Error> {
     let matches = App::new("ietf")
-        .version("0.1.0")
+        .version("0.2.0")
         .about("CLI for reading IETF RFCs.")
         .before_help("██▄██ ▄▄█▄ ▄█ ▄▄\n██ ▄█ ▄▄██ ██ ▄█\n█▄▄▄█▄▄▄██▄██▄██\n▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀")
         .arg(

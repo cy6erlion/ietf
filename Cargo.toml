@@ -1,6 +1,6 @@
 [package]
 name = "ietf"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["cy6erlion <dev@merely.tech>"]
 edition = "2018"
 description = "A program to read IETF RFCs in the terminal."
