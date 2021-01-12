@@ -24,3 +24,6 @@ minreq = {version = "2.2.1", features = ["https"]}
 pager = "0.16.0"
 # Directories
 dirs-next = "2.0.0"
+
+# Terminal User Interface
+cursive = "0.15"
