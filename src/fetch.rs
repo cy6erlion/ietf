@@ -1,6 +1,5 @@
 // Download RFC index file
 pub fn index() -> Result<Vec<String>, minreq::Error> {
-    println!("Fetching RFC index");
     let response = minreq::get("https://www.rfc-editor.org/rfc-index.txt").send()?;
     let data = scrape(response.as_str()?);
     Ok(data)
@@ -8,10 +7,7 @@ pub fn index() -> Result<Vec<String>, minreq::Error> {
 
 // Download RFC localy
 pub fn rfc(sn: u32) -> Result<String, minreq::Error> {
-    println!("Fetching RFC #{}", sn);
     let address = format!("https://www.rfc-editor.org/rfc/rfc{}.txt", sn);
-
-    println!("{}", address);
     let response = minreq::get(&address).send()?;
     Ok(String::from(response.as_str()?))
 }
