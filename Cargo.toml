@@ -20,8 +20,7 @@ license = "MIT"
 clap = "2.33.3"
 # Minimal HTTP client
 minreq = {version = "2.2.1", features = ["https"]}
-# Pager
-pager = "0.16.0"
+
 # Directories
 dirs-next = "2.0.0"
 
