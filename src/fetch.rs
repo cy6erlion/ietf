@@ -1,21 +1,19 @@
 // Download RFC index file
-pub fn index() -> Result<(), minreq::Error> {
+pub fn index() -> Result<Vec<String>, minreq::Error> {
     println!("Fetching RFC index");
     let response = minreq::get("https://www.rfc-editor.org/rfc-index.txt").send()?;
     let data = scrape(response.as_str()?);
-    super::storage::persist_index(data);
-    Ok(())
+    Ok(data)
 }
 
 // Download RFC localy
-pub fn rfc(sn: u32) -> Result<(), minreq::Error> {
+pub fn rfc(sn: u32) -> Result<String, minreq::Error> {
     println!("Fetching RFC #{}", sn);
     let address = format!("https://www.rfc-editor.org/rfc/rfc{}.txt", sn);
 
     println!("{}", address);
     let response = minreq::get(&address).send()?;
-    super::storage::persist_rfc(sn, response.as_str()?);
-    Ok(())
+    Ok(String::from(response.as_str()?))
 }
 
 // TODO: fix bug causing not to return the last RFC
