@@ -4,7 +4,7 @@
 █▄▄▄█▄▄▄██▄██▄██
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-ietf 0.1.0
+ietf 0.2.0
 A program to read RFCs in the terminal.
 
 USAGE:
