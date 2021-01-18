@@ -4,8 +4,8 @@
 █▄▄▄█▄▄▄██▄██▄██
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-ietf 0.2.0
-A program to read RFCs in the terminal.
+ietf 0.2.1
+CLI for reading IETF RFCs.
 
 USAGE:
     ietf [OPTIONS] [SUBCOMMAND]
@@ -21,7 +21,7 @@ OPTIONS:
 SUBCOMMANDS:
     clean     Remove the rfc directory
     help      Prints this message or the help of the given subcommand(s)
-    update    Update RFC Index					
+    update    Update RFC Index
 ```						
 
 ## Features
