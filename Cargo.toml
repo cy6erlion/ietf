@@ -18,11 +18,12 @@ license = "MIT"
 [dependencies]
 # For parsing command line arguments
 clap = "2.33.3"
-# Minimal HTTP client
-minreq = {version = "2.2.1", features = ["https"]}
+
+# Minimal HTTP clientn
+minreq = {version = "2.3.0", features = ["https"]}
 
 # Directories
 dirs-next = "2.0.0"
 
 # Terminal User Interface
-cursive = "0.15"
+cursive = "0.16"
