@@ -12,26 +12,63 @@ pub fn rfc(sn: u32) -> Result<String, minreq::Error> {
     Ok(String::from(response.as_str()?))
 }
 
-// TODO: fix bug causing not to return the last RFC
 pub fn scrape(data: &str) -> Vec<String> {
-    let mut count = 0;
     let mut rfcs = vec![];
-    let mut buff = String::from("");
+    let mut iter = data.lines().skip(66).peekable();
 
-    for line in data.lines() {
-        // Skip first 65 lines
-        if count > 65 {
-            // Detect blank lines
-            if line == "" {
-                rfcs.push(buff);
-                buff = String::from("");
-            } else {
-                buff = format!("{}{}", buff, line);
-            }
-        } else {
-            count += 1;
-        }
+    while iter.peek().is_some() {
+        rfcs.push(
+            iter.by_ref()
+                .take_while(|s| !s.is_empty())
+                .fold("".to_owned(), |acc, s| acc + s),
+        );
     }
 
     rfcs
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn single_rfc_scrape() {
+        let data = "\n".repeat(66).to_owned()
+            + "8989 Additional Criteria for Nominating Committee Eligibility. B.\n"
+            + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)\n"
+            + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) \n";
+
+        let rfcs = vec![
+            "8989 Additional Criteria for Nominating Committee Eligibility. B.".to_owned()
+                + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)"
+                + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) ",
+        ];
+
+        assert_eq!(rfcs, scrape(&data));
+    }
+
+    #[test]
+    fn multi_rfc_scrape() {
+        let data = "\n".repeat(66).to_owned()
+            + "8989 Additional Criteria for Nominating Committee Eligibility. B.\n"
+            + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)\n"
+            + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) \n"
+            + "\n"
+            + "9003 Extended BGP Administrative Shutdown Communication. J. Snijders, J.\n"
+            + "     Heitz, J. Scudder, A. Azimov. January 2021. (Format: HTML, TXT, PDF,\n"
+            + "     XML) (Obsoletes RFC8203) (Updates RFC4486) (Status: PROPOSED\n"
+            + "     STANDARD) (DOI: 10.17487/RFC9003) \n";
+
+        let rfcs = vec![
+            "8989 Additional Criteria for Nominating Committee Eligibility. B.".to_owned()
+                + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)"
+                + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) ",
+            "9003 Extended BGP Administrative Shutdown Communication. J. Snijders, J.".to_owned()
+                + "     Heitz, J. Scudder, A. Azimov. January 2021. (Format: HTML, TXT, PDF,"
+                + "     XML) (Obsoletes RFC8203) (Updates RFC4486) (Status: PROPOSED"
+                + "     STANDARD) (DOI: 10.17487/RFC9003) ",
+        ];
+
+        assert_eq!(rfcs, scrape(&data));
+    }
 }
