@@ -1,10 +1,11 @@
+
 ``` console
 ██▄██ ▄▄█▄ ▄█ ▄▄
 ██ ▄█ ▄▄██ ██ ▄█
 █▄▄▄█▄▄▄██▄██▄██
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-ietf 0.2.1
+ietf 0.2.2
 CLI for reading IETF RFCs.
 
 USAGE:
