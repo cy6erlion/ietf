@@ -20,7 +20,7 @@ pub fn scrape(data: &str) -> Vec<String> {
         rfcs.push(
             iter.by_ref()
                 .take_while(|s| !s.is_empty())
-                .fold("".to_owned(), |acc, s| acc + s),
+                .fold(String::new(), |acc, s| acc + s),
         );
     }
 
@@ -33,13 +33,13 @@ mod tests {
 
     #[test]
     fn single_rfc_scrape() {
-        let data = "\n".repeat(66).to_owned()
+        let data = String::from("\n".repeat(66))
             + "8989 Additional Criteria for Nominating Committee Eligibility. B.\n"
             + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)\n"
             + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) \n";
 
         let rfcs = vec![
-            "8989 Additional Criteria for Nominating Committee Eligibility. B.".to_owned()
+            String::from("8989 Additional Criteria for Nominating Committee Eligibility. B.")
                 + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)"
                 + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) ",
         ];
@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn multi_rfc_scrape() {
-        let data = "\n".repeat(66).to_owned()
+        let data = String::from("\n".repeat(66))
             + "8989 Additional Criteria for Nominating Committee Eligibility. B.\n"
             + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)\n"
             + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) \n"
@@ -60,11 +60,12 @@ mod tests {
             + "     STANDARD) (DOI: 10.17487/RFC9003) \n";
 
         let rfcs = vec![
-            "8989 Additional Criteria for Nominating Committee Eligibility. B.".to_owned()
+            String::from("8989 Additional Criteria for Nominating Committee Eligibility. B.")
                 + "     Carpenter, S. Farrell. February 2021. (Format: HTML, TXT, PDF, XML)"
                 + "     (Status: EXPERIMENTAL) (DOI: 10.17487/RFC8989) ",
-            "9003 Extended BGP Administrative Shutdown Communication. J. Snijders, J.".to_owned()
-                + "     Heitz, J. Scudder, A. Azimov. January 2021. (Format: HTML, TXT, PDF,"
+            String::from(
+                "9003 Extended BGP Administrative Shutdown Communication. J. Snijders, J.",
+            ) + "     Heitz, J. Scudder, A. Azimov. January 2021. (Format: HTML, TXT, PDF,"
                 + "     XML) (Obsoletes RFC8203) (Updates RFC4486) (Status: PROPOSED"
                 + "     STANDARD) (DOI: 10.17487/RFC9003) ",
         ];
