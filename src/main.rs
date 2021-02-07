@@ -1,10 +1,12 @@
+extern crate pager;
 use clap::{App, Arg, SubCommand};
 use cursive::align::HAlign;
 use cursive::event::EventResult;
 use cursive::traits::With;
 use cursive::traits::*;
-use cursive::views::{Dialog, OnEventView, SelectView, TextView};
+use cursive::views::{Dialog, OnEventView, SelectView};
 use cursive::Cursive;
+use pager::Pager;
 
 mod fetch;
 mod storage;
@@ -38,13 +40,6 @@ fn main() -> Result<(), std::io::Error> {
         .get_matches();
 
     let storage = storage::Storage::new();
-    let mut siv = cursive::default();
-    siv.set_theme(cursive::theme::Theme::default().with(|theme| {
-        use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
-        theme.palette[Background] = TerminalDefault;
-        theme.palette[Primary] = Dark(Black);
-        theme.palette[Secondary] = Rgb(255, 12, 42);
-    }));
 
     // Read RFC by rfcnumber
     if let Some(n) = matches.value_of("Number") {
@@ -70,8 +65,8 @@ fn main() -> Result<(), std::io::Error> {
             .read_to_string(&mut rfc_data)
             .expect("Unable to read RFC");
 
-        siv.add_layer(TextView::new(rfc_data).with_name("text").scrollable());
-        siv.run();
+        Pager::with_pager("less -r").setup();
+        println!("{}", rfc_data);
         return Ok(());
     }
 
@@ -97,6 +92,14 @@ fn main() -> Result<(), std::io::Error> {
     }
 
     // ---------- Display RFC list view ------------
+    let mut siv = cursive::default();
+    siv.set_theme(cursive::theme::Theme::default().with(|theme| {
+        use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
+        theme.palette[Background] = TerminalDefault;
+        theme.palette[Primary] = Dark(Black);
+        theme.palette[Secondary] = Rgb(255, 12, 42);
+    }));
+
     let mut index_data = String::new();
     let index_file = File::open(&storage.index_file_path).expect("Unable to open file");
     let mut buffer_reader = BufReader::new(index_file);
@@ -130,7 +133,10 @@ fn main() -> Result<(), std::io::Error> {
             .read_to_string(&mut rfc_data)
             .expect("Unable to read RFC");
 
-        siv.add_layer(TextView::new(rfc_data).with_name("text").scrollable());
+        siv.dump();
+        Pager::with_pager("less -r").setup();
+        println!("{}", rfc_data);
+        siv.quit();
     };
 
     buffer_reader

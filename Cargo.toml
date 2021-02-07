@@ -27,3 +27,6 @@ dirs-next = "2.0.0"
 
 # Terminal User Interface
 cursive = "0.16"
+
+# Pager for reading the RFCs
+pager = "0.16.0"
