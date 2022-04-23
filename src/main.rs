@@ -1,10 +1,10 @@
 extern crate pager;
 use clap::{App, Arg, SubCommand};
 use cursive::align::HAlign;
-use cursive::event::EventResult;
+use cursive::event::{EventResult, Key};
 use cursive::traits::With;
 use cursive::traits::*;
-use cursive::views::{Dialog, OnEventView, SelectView};
+use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView};
 use cursive::Cursive;
 use pager::Pager;
 
@@ -97,7 +97,7 @@ fn main() -> Result<(), std::io::Error> {
         use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
         theme.palette[Background] = TerminalDefault;
         theme.palette[Primary] = Dark(Black);
-        theme.palette[Secondary] = Rgb(255, 12, 42);
+        // theme.palette[Secondary] = Rgb(255, 12, 42);
     }));
 
     let mut index_data = String::new();
@@ -105,69 +105,107 @@ fn main() -> Result<(), std::io::Error> {
     let mut buffer_reader = BufReader::new(index_file);
     let mut _read_more_dots = "";
 
-    // Let's put the callback in a separate function to keep it clean,
-    // but it's not required.
-    let show_next_window = move |siv: &mut Cursive, rfc_title: &str| {
-        let rfc_title: Vec<&str> = rfc_title.split(' ').collect();
-
-        let rfc_number = rfc_title[0]
-            .parse::<u32>()
-            .expect("Could not parse RFC number");
-
-        // check if RFC is downloaded
-        if !storage.is_rfc_downloaded(rfc_number).unwrap() {
-            println!("Fetching RFC...");
-            // download RFC
-            let rfc_data = fetch::rfc(rfc_number).unwrap();
-
-            // persist RFC
-            storage.persist_rfc(rfc_number, &rfc_data);
-        }
-
-        let rfc_file_path = format!("{}{}", storage.rfc_dir_path, rfc_number);
-
-        let mut rfc_data = String::new();
-        let index_file = File::open(&rfc_file_path).expect("Unable to open file");
-        let mut buffer_reader = BufReader::new(index_file);
-        buffer_reader
-            .read_to_string(&mut rfc_data)
-            .expect("Unable to read RFC");
-
-        siv.dump();
-        Pager::with_pager("less -r").setup();
-        println!("{}", rfc_data);
-        siv.quit();
-    };
-
     buffer_reader
         .read_to_string(&mut index_data)
         .expect("Unable to read INDEX");
 
-    let lines = index_data.lines();
+    siv.set_user_data(index_data);
+    let index_lines = siv.user_data::<String>().unwrap().lines();
 
-    let mut select = SelectView::new()
+    let select = SelectView::new()
+        .with_all_str(index_lines)
+        // Sets the callback for when "Enter" is pressed.
+        .on_submit(show_next_window)
         // Center the text horizontally
         .h_align(HAlign::Center)
-        // Use keyboard to jump to the pressed letters
-        .autojump();
-
-    select.add_all_str(lines);
-
-    // Sets the callback for when "Enter" is pressed.
-    select.set_on_submit(show_next_window);
+        .with_name("select");
 
     // Let's override the `p` and `n` keys for navigation
     let select = OnEventView::new(select)
+        .on_pre_event_inner('j', |s, _| {
+            let cb = s.get_mut().select_down(1);
+            Some(EventResult::Consumed(Some(cb)))
+        })
+        .on_pre_event_inner('k', |s, _| {
+            let cb = s.get_mut().select_up(1);
+            Some(EventResult::Consumed(Some(cb)))
+        })
         .on_pre_event_inner('p', |s, _| {
-            let cb = s.select_up(1);
+            let cb = s.get_mut().select_up(1);
             Some(EventResult::Consumed(Some(cb)))
         })
         .on_pre_event_inner('n', |s, _| {
-            let cb = s.select_down(1);
+            let cb = s.get_mut().select_down(1);
             Some(EventResult::Consumed(Some(cb)))
         });
 
-    siv.add_layer(Dialog::around(select.scrollable().fixed_size((30, 20))).title("IETF RFC INDEX"));
+    // search window
+    let search = EditView::new().on_edit(on_edit).on_submit(on_submit);
+    let search = search.fixed_width(40);
+
+    // verticla layout
+    let linear_layout = LinearLayout::vertical()
+        .child(Dialog::around(search))
+        .child(Dialog::around(select.scrollable().fixed_size((40, 15))).title("IETF RFC INDEX"));
+    siv.add_global_callback(Key::Esc, |s| s.quit());
+    siv.add_layer(linear_layout);
     siv.run();
     Ok(())
+}
+
+// update select list when input modified
+fn on_edit(siv: &mut Cursive, query: &str, _size: usize) {
+    let mut select = siv.find_name::<SelectView>("select").unwrap();
+    // clear first
+    select.clear();
+    let filtered_lines = siv.user_data::<String>().unwrap().lines().filter(|&line| {
+        let line = line.to_lowercase();
+        let query = query.to_lowercase();
+        line.contains(&query)
+    });
+    select.add_all_str(filtered_lines);
+}
+
+// show next window using the first match
+fn on_submit(siv: &mut Cursive, _query: &str) {
+    let select = siv.find_name::<SelectView>("select").unwrap();
+    if !select.is_empty() {
+        let rfc_title = &*select.selection().unwrap();
+        show_next_window(siv, rfc_title);
+    }
+    // no-op
+}
+// Let's put the callback in a separate function to keep it clean,
+// but it's not required.
+fn show_next_window(siv: &mut Cursive, rfc_title: &str) {
+    let storage = storage::Storage::new();
+    let rfc_title: Vec<&str> = rfc_title.split(' ').collect();
+
+    let rfc_number = rfc_title[0]
+        .parse::<u32>()
+        .expect("Could not parse RFC number");
+
+    // check if RFC is downloaded
+    if !storage.is_rfc_downloaded(rfc_number).unwrap() {
+        println!("Fetching RFC...");
+        // download RFC
+        let rfc_data = fetch::rfc(rfc_number).unwrap();
+
+        // persist RFC
+        storage.persist_rfc(rfc_number, &rfc_data);
+    }
+
+    let rfc_file_path = format!("{}{}", storage.rfc_dir_path, rfc_number);
+
+    let mut rfc_data = String::new();
+    let index_file = File::open(&rfc_file_path).expect("Unable to open file");
+    let mut buffer_reader = BufReader::new(index_file);
+    buffer_reader
+        .read_to_string(&mut rfc_data)
+        .expect("Unable to read RFC");
+
+    siv.dump();
+    Pager::with_pager("less -r").setup();
+    println!("{}", rfc_data);
+    siv.quit();
 }
